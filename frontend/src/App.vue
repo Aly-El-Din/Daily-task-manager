@@ -20,7 +20,7 @@
     <router-link to="/about">About</router-link>
     <router-link to="/about">About</router-link>  -->
   </div>
-  <router-view/>
+<router-view/>
 </template>
 <script>
 import login from './views/Login.vue'
