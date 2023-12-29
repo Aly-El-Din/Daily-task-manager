@@ -1,0 +1,229 @@
+<template>
+  <div class="page">
+    <div class="firstHalf">
+      <div class="margaining">
+      <h1>Sign up</h1>
+      <p>
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sint totam
+        delectus, adipisci, sapiente perferendis non, voluptatibus temporibus
+        ipsam quia deserunt consectetur labore sequi laboriosam. Accusantium
+        sint dolore hic optio doloremque!
+      </p>
+      <div v-if="Usercheck" id="agreement">This is an important field</div>
+      <div class="texts">Username</div>
+      <InputText
+        v-model="Username"
+        size="normal"
+        @change="Username"
+      />
+      <div v-if="phoneChecker" id="agreement">This is an important field</div>
+      <div>
+        <div class="texts">
+          <label for="phone">Phone Number </label>
+          <label for="dropdow" style="margin-left: 130px">Gender</label>
+        </div>
+        <InputText type="text" id="phone" v-model="phonenumber" placeholder="Enter your number" />
+        <Dropdown
+          v-model="ChoosenGender"
+          :options="genders"
+          id="dropdow"
+          optionLabel="name"
+          placeholder="Select a Gender"
+          style="margin-left: 50px"
+        />
+        
+      </div>
+      <div class="texts">Date of Birth</div>
+      <Calendar v-model="date" dateFormat="dd/mm/yy" />
+      <div v-if="emailcheck" id="agreement">This is an important field</div>
+      <div class="texts">Email</div>
+      <InputText type="text" v-model="email" />
+      <div v-if="passcheck" id="agreement">This is an important field</div>
+      <div class="texts">Password</div>
+      <Password v-model="Password" toggleMask >
+        <template #header>
+          <h6>Pick a password</h6>
+        </template>
+        <template #footer>
+          <Divider/>
+          <p class="mt-2">Suggestions</p>
+          <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+            <li>At least one lowercase</li>
+            <li>At least one uppercase</li>
+            <li>At least one numeric</li>
+            <li>Minimum 8 characters</li>
+            <li>One special character</li>
+          </ul>
+        </template>
+      </Password>
+
+      <form action="">
+        <br />
+        <Checkbox v-model="checked" :binary="true" id="check" @change="ischecked" />
+        <label for="check" class="texts" style="margin-left: 20px"
+          >By clicking this you agree to </label
+        ><a href="">terms and Conditions</a>
+      </form>
+      <br/>
+      <div v-if="warning" id="Agreement" class="texts" > You must Agree to terms and Conditions </div>
+      <btn label="Sign up" id="signbutton" @click="SubmitInfo" />
+      
+    </div>
+    </div>
+
+    <div class="secondHalf">
+      <img src="@\assets\siup.png" class="image" />
+    </div>
+  </div>
+</template>
+
+<script>
+import Calendar from "primevue/calendar";
+import AutoComplete from "primevue/autocomplete";
+import Password from "primevue/password";
+import Checkbox from "primevue/checkbox";
+import btn from "primevue/button";
+import Dropdown from "primevue/dropdown";
+import InputText from "primevue/inputtext";
+import Divider from 'primevue/divider';
+
+export default {
+  name: "HelloWorld",
+  components: {
+    Calendar,
+    AutoComplete,
+    Password,
+    Checkbox,
+    btn,
+    Dropdown,
+    InputText,
+    Divider,
+  },
+  data() {
+    return {
+      Username: "",
+      date: "",
+      Password: "",
+      checked: true,
+      genders: [{ name: "male" }, { name: "female" }],
+      ChoosenGender: "male",
+      phonenumber:'',
+      email:'',
+      warning:false,
+      passcheck:false,
+      Usercheck:false,
+      phoneChecker:false,
+      emailcheck:false,
+    };
+  },
+  methods: {
+    WriteUserName(){
+      if(this.Username.trim()===""){
+        this.Usercheck=true;
+      }
+      else{
+      this.Username
+      console.log(this.Username)
+      }
+    },
+    Writephonenumber(){
+      if(this.phonenumber.trim()===""){
+      this.phoneChecker=true
+      }
+      this.phonenumber;
+      console.log(this.phonenumber);
+    },
+    WriteGender(){
+      this.ChoosenGender;
+      console.log(this.ChoosenGender.name);
+    },
+    ChDateofBirth(){
+      this.date;
+      console.log(this.date);
+    },
+    WriteEmail(){
+      if(this.email.trim()===""){
+        this.emailcheck=true;
+      }
+      this.email;
+      console.log(this.email);
+    },
+    writePassword(){
+      if(this.Password.trim()===""){
+        this.passcheck=true
+      }
+      else{
+      this.Password;
+      console.log(this.Password);
+      }
+    },
+    ischecked(){
+      if(this.checked){
+        this.warning=false;
+      }
+    },
+    SubmitInfo(){
+      if(this.checked){
+      this.WriteUserName();
+      this.Writephonenumber();
+      this.WriteGender();
+      this.ChDateofBirth();
+      this.WriteEmail();
+      this.writePassword();
+      this.warning=false
+      }
+      else{
+        this.warning=true;
+      }
+    }
+  },
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+.page {
+  width: 100%;
+  height: 100%;
+  background-color: #f3f3f3;
+}
+.firstHalf {
+  width: 50%;
+  height: 770px;
+  background-color: #f3f3f3;
+  float: left;
+}
+.secondHalf {
+  width: 50%;
+  height: 770px;
+  background-color: #f3f3f3;
+  float: left;
+  align-content: center;
+  text-align: center;
+}
+.texts {
+  font-size: large;
+  font: 700;
+  margin-bottom: 10px;
+  margin-top: 15px;
+}
+#signbutton {
+  --primary-color:#f76540 ;
+background-color: #f76540 ;
+}
+#check:checked{
+  background-color: #f76540 ;
+}
+.image{
+  height: 400px;
+  width:400px;
+  margin-top: 25%;
+}
+.margaining{
+  margin-left: 20px;
+}
+#Agreement{
+  color: red;
+  
+}
+</style>
