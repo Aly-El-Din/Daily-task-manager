@@ -17,6 +17,7 @@ public class Database {
 
 
     private HashMap<String, User> data;
+
     @Autowired
     public Database() {
         this.data=new HashMap<>();

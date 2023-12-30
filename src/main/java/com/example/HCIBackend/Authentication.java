@@ -38,7 +38,7 @@ public class Authentication {
         database.load();
         if (Users.containsKey(user.getUserName())) {// expected to return list of data
             if (Users.get(user.getUserName()).equals( user.getPassword())) {
-                database.load();
+
                 return "Success";
             } else throw new RuntimeException("Wrong password");
         }
