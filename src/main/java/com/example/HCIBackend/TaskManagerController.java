@@ -1,5 +1,6 @@
 package com.example.HCIBackend;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
@@ -11,32 +12,22 @@ public class TaskManagerController {
 
     Authentication authentication;
     TaskManagerService taskManagerService;
-    TaskManagerDto taskManagerDto;
+    Database database;
 
 
     @Autowired
     public TaskManagerController(Authentication authentication,
-                                 TaskManagerService taskManagerService, TaskManagerDto taskManagerDto) {
+                                 TaskManagerService taskManagerService) {
         this.authentication = authentication;
         this.taskManagerService = taskManagerService;
-        this.taskManagerDto = taskManagerDto;
+        this.database = Database.getInstance();
     }
 
     //sign up and register a new user
     @PostMapping("/signup")
     public String signUp(@RequestBody User user) {
-        try {
-            if (authentication.isUsernameValid(user.getUserName()) && authentication.isPasswordValid(user.getPassword())) {
-                authentication.createAccount(user);
-                taskManagerDto.getDatabase().put(user.getUserName(),user);
-                System.out.println(taskManagerDto.getDatabase().get(user.getUserName()).getUserName());
-               // taskManagerDto.save();
-                return "Welcome";
-            }
-        } catch (Exception e){
-            return e.getMessage();
-        }
-        return null;
+
+        return authentication.createAccount(user);
     }
     //login a registered user
     @PostMapping("/login")
@@ -59,40 +50,38 @@ public class TaskManagerController {
 
 
     //create a new work task
-    @PostMapping("/create/workTask")
-    public WorkTask createTask(@RequestBody WorkTask task, @RequestHeader("user") String user)
+    @PostMapping("/create/workTask/{user}")
+    public WorkTask createTask(@RequestBody WorkTask task, @PathVariable String user)
     {
-        taskManagerDto.load();
         taskManagerService.createWorkTask(task,user);
-        taskManagerDto.save();
+
         return  task;
     }
 
     //load database from data.json
-
     @GetMapping("/loadDB")
     public HashMap<String,User> loadDB(){
-       taskManagerDto.load();
-        return taskManagerDto.getDatabase();
+        database.load();
+        return database.getDatabase();
     }
 
 
     //load info of a given user
     @GetMapping("/dashboard/{username}")
     public User loadInfo(@PathVariable String username){
-        taskManagerDto.load();
-        return taskManagerDto.getDatabase().get(username);
+        database.load();
+        return database.getDatabase().get(username);
     }
 
 
     @GetMapping("/save")
     public void save(){
-        taskManagerDto.save();
+        database.save();
     }
 
     @GetMapping("/getdb")
     public HashMap<String,User> printDB(){
-        return taskManagerDto.getDatabase();
+        return database.getDatabase();
     }
 
     @GetMapping("/data")
@@ -100,12 +89,10 @@ public class TaskManagerController {
         return taskManagerService.getTasksByDate(username,date);
     }
 
-    @DeleteMapping("/delete")public LinkedList<WorkTask> deleteTask(@RequestParam String username,@RequestParam int id)
+    @DeleteMapping("/delete")public LinkedList<WorkTask> deleteTask(@RequestParam String username,@RequestParam String date)
     {
-        return taskManagerService.deleteTask(id,username);
+        return taskManagerService.deleteTask(date,username);
     }
-
-
 
 
 

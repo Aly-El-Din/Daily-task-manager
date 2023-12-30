@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 @Configuration
 public class appConfig {
@@ -18,7 +19,7 @@ public class appConfig {
     }
     @Bean
     public Authentication authentication() {
-        return new Authentication(new HashMap<>());
+        return new Authentication();
     }
     @Bean
     LocalDate localDate(){
@@ -30,10 +31,15 @@ public class appConfig {
     }
     @Bean
     public User user(){
-        return new User("","");
+        return new User("", "");
     }
     @Bean
     public HashMap<String,User> hashMap(){
+        return  new HashMap<>();
+    }
+
+    @Bean
+    public HashMap<String, LinkedList<WorkTask>> map(){
         return  new HashMap<>();
     }
 }

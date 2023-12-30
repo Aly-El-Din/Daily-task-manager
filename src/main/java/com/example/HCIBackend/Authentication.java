@@ -1,5 +1,6 @@
 package com.example.HCIBackend;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.io.*;
 import java.util.HashMap;
@@ -8,26 +9,62 @@ import java.util.regex.*;
 
 @Component
 public class Authentication {
-    private HashMap<String,String> Users;
 
-    public Authentication(HashMap<String, String> users) {
+
+    private HashMap<String,String> Users = new HashMap<>();
+    private Database database;
+
+    @Autowired
+    public Authentication(HashMap<String, String> users , Database database) {
+        this.Users = new HashMap<>();
+        this.database= Database.getInstance();
+    }
+    public Authentication(){
+
+        this.database= Database.getInstance();
+    }
+
+    public HashMap<String, String> getUsers() {
+        return Users;
+    }
+
+    public void setUsers(HashMap<String, String> users) {
         this.Users = users;
     }
 
     //authenticate logins
     public String validate(User user) {
+        load();
+        database.load();
         if (Users.containsKey(user.getUserName())) {// expected to return list of data
             if (Users.get(user.getUserName()).equals( user.getPassword())) {
+                database.load();
                 return "Success";
             } else throw new RuntimeException("Wrong password");
         }
         else throw new RuntimeException("Wrong username");
     }
+
     //On sign up
-    public void createAccount(User user){
-        Users.put(user.getUserName(),user.getPassword());
-        save(Users);
-    }
+    public String createAccount(User user) {
+
+        load();
+        try {
+            if (isUsernameValid(user.getUserName()) && isPasswordValid(user.getPassword())) {
+                Users.put(user.getUserName(), user.getPassword());
+                database.getDatabase().put(user.getUserName(), user);
+                database.save();
+                save(Users);
+                return "welcome";
+            }
+
+            } catch(Exception e){
+                return e.getMessage();
+            }
+
+           return null;
+        }
+
 
     //put constraint on the password before approving
 
@@ -67,7 +104,6 @@ public class Authentication {
         return true;
     }
 
-
     //Load hashmap of registered accounts from file
     public  HashMap<String, String> load() {
         String filename="C:\\Users\\bo2dy\\OneDrive\\Desktop\\HCI\\milestone 1\\HCIBackend\\authentication file\\users";
@@ -81,19 +117,24 @@ public class Authentication {
             System.err.println("Error loading HashMap from " + filename + ": " + e.getMessage());
         }
         hashmap.remove("");
-        Users= (HashMap<String, String>) hashmap.clone();
+        setUsers((HashMap<String, String>) hashmap.clone());
         return Users;
     }
     // Save hashmap of usernames into file
     public void save(HashMap<String, String> hashmap) {
         String filename="C:\\Users\\bo2dy\\OneDrive\\Desktop\\HCI\\milestone 1\\HCIBackend\\authentication file\\users";
-        try (FileOutputStream fileOut = new FileOutputStream(filename);
-             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filename);
+
+             System.out.println(hashmap.isEmpty());
+             System.out.println(hashmap.get("sahar"));
+             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut) ;
             objectOut.writeObject(hashmap);
             System.out.println("HashMap successfully written to " + filename);
         } catch (IOException e) {
             System.err.println("Error writing HashMap to " + filename + ": " + e.getMessage());
         }
+
     }
 
 }

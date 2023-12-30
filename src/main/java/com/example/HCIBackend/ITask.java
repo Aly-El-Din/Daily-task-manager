@@ -6,8 +6,8 @@ package com.example.HCIBackend;
      void setTaskName(String taskName);
      String getTaskDescription();
      void setTaskDescription(String taskDescription);
-     boolean isPriority();
-     void setPriority(boolean priority);
+     String getPriority();
+     void setPriority(String priority);
      boolean isDone();
      void setDone(boolean done);
 
