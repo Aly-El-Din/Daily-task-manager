@@ -41,13 +41,11 @@ public class TaskManagerController {
         }
     }
 
-
     @GetMapping("/load")
     public HashMap<String,String> getMap(){
 
         return authentication.load();
     }
-
 
     //create a new work task
     @PostMapping("/create/workTask/{user}")
@@ -65,14 +63,12 @@ public class TaskManagerController {
         return database.getDatabase();
     }
 
-
     //load info of a given user
     @GetMapping("/dashboard/{username}")
     public User loadInfo(@PathVariable String username){
         database.load();
         return database.getDatabase().get(username);
     }
-
 
     @GetMapping("/save")
     public void save(){
@@ -89,9 +85,23 @@ public class TaskManagerController {
         return taskManagerService.getTasksByDate(username,date);
     }
 
-    @DeleteMapping("/delete")public LinkedList<WorkTask> deleteTask(@RequestParam String username,@RequestParam String date)
+    @DeleteMapping("/delete")
+    public LinkedList<WorkTask> deleteTask(@RequestParam String username,@RequestParam String date)
     {
         return taskManagerService.deleteTask(date,username);
+    }
+
+    @GetMapping("/search/{criteria}/{query}/{username}")
+    public LinkedList<WorkTask> filteredSearch(@PathVariable String criteria , @PathVariable String query, @PathVariable String username){
+        CriteriaFactory factory = new CriteriaFactory();
+        ICriteria filterCriteria = factory.getCriteria(criteria);
+        return filterCriteria.meetCriteria((HashMap<String, LinkedList<WorkTask>>) database.getDatabase().get(username).getTasks(),query);
+    }
+
+    @GetMapping("/search/default/{username}/{query}")
+    public LinkedList<WorkTask> defaultSearch(@PathVariable String username,@PathVariable String query){
+
+        return taskManagerService.searchByDefault((HashMap<String, LinkedList<WorkTask>>) database.getDatabase().get(username).getTasks(),query);
     }
 
 

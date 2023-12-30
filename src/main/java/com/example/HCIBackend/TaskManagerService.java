@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 
 @Service
@@ -47,4 +48,25 @@ public class TaskManagerService {
         }
         return new LinkedList<>();
     }
+    public LinkedList<WorkTask> searchByDefault(HashMap<String,LinkedList<WorkTask>> tasks,String query){
+
+            LinkedList<WorkTask> filtered = new LinkedList<>();
+
+            for (Map.Entry<String, LinkedList<WorkTask>> entry : tasks.entrySet()){
+                for(WorkTask task:entry.getValue()) {
+                    if (task.getTaskName().contains(query)) {
+                        filtered.add(task);
+                    }
+                    if (task.getDate().contains(query)) {
+                        filtered.add(task);
+                    }
+                    if (task.getTaskDescription().contains(query)) {
+                        filtered.add(task);
+                    }
+
+                }
+            }
+            return filtered;
+        }
+
 }
