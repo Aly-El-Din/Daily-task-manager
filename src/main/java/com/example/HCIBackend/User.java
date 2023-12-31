@@ -28,31 +28,19 @@ public class User {
         this.tasks=new HashMap<>();
     }
 
-//    public void setWorkTasks(WorkTask workTask) {
-//
-//        if (this.tasks == null) {
-//            this.tasks = new HashMap<>();
-//            this.tasks.put(" ", new LinkedList<>());
-//        }
-//
-//        if( this.tasks.get(workTask.getDate()) == null ){
-//            this.tasks.put(workTask.getDate(),new LinkedList<>(List.of(workTask)));
-//            this.tasks.remove(" ");
-//        }
-//
-//       else this.tasks.get(workTask.getDate()).add(workTask);
-//    }
-public void setWorkTasks(WorkTask workTask) {
+
+    public void setWorkTasks(WorkTask workTask) {
         String date = workTask.getDate();
-    if (tasks == null) {
+        if (tasks == null) {
         tasks = new HashMap<>();
-    }
-    // Initialize the LinkedList for the date if it doesn't exist
+        }
+        // Initialize the LinkedList for the date if it doesn't exist
        tasks.computeIfAbsent(date, k -> new LinkedList<>());
        // Add the work task to the LinkedList
 
        this.tasks.get(date).add(workTask);
-}
+
+    }
 
     public String getUserName() {
         return userName;
@@ -74,7 +62,7 @@ public void setWorkTasks(WorkTask workTask) {
         return this.tasks.get(date);
     }
 
-    public Map<String, LinkedList<WorkTask>> getTasks() {
+    public HashMap<String, LinkedList<WorkTask>> getTasks() {
         return this.tasks;
     }
 
